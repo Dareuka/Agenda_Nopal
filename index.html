@@ -42,7 +42,6 @@
                 </div>
 
                 <form id="contactForm" onsubmit="agregarContacto(event)" class="space-y-4">
-                    <!-- Campo Nombre -->
                     <div>
                         <label for="nombre" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nombre Completo</label>
                         <input type="text" id="nombre" placeholder="Ej. Dr. Carlos Mendoza" required
@@ -364,7 +363,7 @@
                 }
             };
             reader.readAsText(file);
-            event.target.value = ''; // Reset input
+            event.target.value = '';
         }
 
         function escapeHtml(str) {

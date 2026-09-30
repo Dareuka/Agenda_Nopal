@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Telefónica Web - Colonia Ixtlahuacán</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+    <header class="bg-emerald-700 text-white shadow-md border-b-4 border-amber-500">
+        <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="bg-amber-400 text-slate-900 text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">NopalAgro / Consultorio</span>
+                    <span class="text-xs bg-emerald-800 text-emerald-200 px-2 py-0.5 rounded-full">Sprint 2</span>
+                </div>
+                <h1 class="text-2xl md:text-3xl font-bold tracking-tight">Agenda Telefónica Web</h1>
+                <p class="text-emerald-100 text-sm mt-1">Huerto Escolar & Consultorio Comunitario • Directorio Rápido de Emergencias y Proveedores</p>
+            </div>
+            <div id="syncBadge" class="bg-emerald-800/80 px-3 py-1.5 rounded-lg border border-emerald-600/50 flex items-center gap-2 text-xs">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Almacenamiento Local Activo</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <section class="lg:col-span-5 space-y-6">
+            
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                    <h2 class="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                        Registrar Nuevo Contacto
+                    </h2>
+                </div>
+
+                <form id="contactForm" onsubmit="agregarContacto(event)" class="space-y-4">
+                    <!-- Campo Nombre -->
+                    <div>
+                        <label for="nombre" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nombre Completo</label>
+                        <input type="text" id="nombre" placeholder="Ej. Dr. Carlos Mendoza" required
+                            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm">
+                    </div>
+
+                    <div>
+                        <label for="categoria" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Categoría</label>
+                        <select id="categoria" required
+                            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm bg-white">
+                            <option value="">Selecciona una categoría...</option>
+                            <option value="Médico">Médico</option>
+                            <option value="Proveedor de Abono">Proveedor de Abono</option>
+                            <option value="Paciente">Paciente</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="telefono" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Teléfono (10 dígitos)</label>
+                        <input type="text" id="telefono" maxlength="10" placeholder="Ej. 5512345678" required
+                            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm">
+                        <!-- Mensaje de Error de Validación (Regla de Algoritmo Sprint 1) -->
+                        <p id="mensajeError" class="hidden mt-1.5 text-xs text-red-600 font-medium flex items-center gap-1">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span id="textoError">Error: El teléfono debe tener exactamente 10 dígitos.</span>
+                        </p>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-sm transition-all duration-150 flex items-center justify-center gap-2 text-sm mt-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        Guardar en Agenda
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg>
+                    Respaldo de Información
+                </h3>
+                <p class="text-xs text-slate-500 mb-4">Exporta tus datos para prevenir pérdidas en caso de daño o cambio de equipo informático.</p>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="exportarRespaldo()" 
+                        class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg border border-slate-300 transition-colors flex items-center justify-center gap-1.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Exportar JSON
+                    </button>
+
+                    <label class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg border border-slate-300 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        Restaurar Copia
+                        <input type="file" id="importFileInput" accept=".json" onchange="restaurarRespaldo(event)" class="hidden">
+                    </label>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="lg:col-span-7 space-y-4">
+            
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+                <div>
+                    <label for="buscador" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">
+                        Búsqueda Rápida de Contacto
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </span>
+                        <input type="text" id="buscador" onkeyup="filtrarContactos()" placeholder="Escribe un nombre para filtrar en tiempo real..."
+                            class="w-full pl-9 pr-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <span class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">Filtrar por Categoría:</span>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="seleccionarFiltro('Todos')" id="btn-filtro-Todos" class="btn-filtro px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-600 text-white shadow-sm transition-all">
+                            Todos (<span id="count-todos">0</span>)
+                        </button>
+                        <button onclick="seleccionarFiltro('Médico')" id="btn-filtro-Médico" class="btn-filtro px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                            Médicos (<span id="count-medicos">0</span>)
+                        </button>
+                        <button onclick="seleccionarFiltro('Proveedor de Abono')" id="btn-filtro-Proveedor de Abono" class="btn-filtro px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                            Proveedores (<span id="count-proveedores">0</span>)
+                        </button>
+                        <button onclick="seleccionarFiltro('Paciente')" id="btn-filtro-Paciente" class="btn-filtro px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                            Pacientes (<span id="count-pacientes">0</span>)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100/70 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                <th class="py-3 px-4">Contacto</th>
+                                <th class="py-3 px-4">Categoría</th>
+                                <th class="py-3 px-4">Teléfono</th>
+                                <th class="py-3 px-4 text-center">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaContactos" class="divide-y divide-slate-100 text-sm">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="estadoVacio" class="hidden p-8 text-center">
+                    <svg class="w-12 h-12 text-slate-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <p class="text-slate-500 font-medium text-sm">No se encontraron contactos en esta vista.</p>
+                    <p class="text-slate-400 text-xs mt-1">Intenta cambiar el término de búsqueda o limpia los filtros.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <div id="toast" class="fixed bottom-4 right-4 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 text-sm transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none z-50">
+        <span id="toastIcon" class="text-emerald-400">✓</span>
+        <span id="toastMessage">Operación realizada exitosamente.</span>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'agenda_ixtlahuacan_v1';
+
+        const contactosIniciales = [
+            { id: 1, nombre: "Dr. Juan Pérez", categoria: "Médico", telefono: "5512345678" },
+            { id: 2, nombre: "Abonos del Sol", categoria: "Proveedor de Abono", telefono: "5598765432" },
+            { id: 3, nombre: "María López", categoria: "Paciente", telefono: "5533445566" }
+        ];
+
+        let contactos = [];
+        let filtroCategoriaActual = 'Todos';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarContactos();
+        });
+
+        function cargarContactos() {
+            const datosGuardados = localStorage.getItem(STORAGE_KEY);
+            if (datosGuardados) {
+                try {
+                    contactos = JSON.parse(datosGuardados);
+                } catch(e) {
+                    contactos = [...contactosIniciales];
+                }
+            } else {
+                contactos = [...contactosIniciales];
+                guardarEnStorage();
+            }
+            renderizarAgenda();
+        }
+
+        function guardarEnStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(contactos));
+        }
+
+        function renderizarAgenda() {
+            const tabla = document.getElementById('tablaContactos');
+            const estadoVacio = document.getElementById('estadoVacio');
+            const busqueda = document.getElementById('buscador').value.toLowerCase().trim();
+
+            tabla.innerHTML = '';
+
+            const contactosFiltrados = contactos.filter(contacto => {
+                const coincideNombre = contacto.nombre.toLowerCase().includes(busqueda);
+                const coincideCategoria = (filtroCategoriaActual === 'Todos') || (contacto.categoria === filtroCategoriaActual);
+                return coincideNombre && coincideCategoria;
+            });
+
+            if (contactosFiltrados.length === 0) {
+                estadoVacio.classList.remove('hidden');
+            } else {
+                estadoVacio.classList.add('hidden');
+            }
+
+            contactosFiltrados.forEach(contacto => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition-colors';
+
+                let badgeStyle = 'bg-slate-100 text-slate-700';
+                if (contacto.categoria === 'Médico') badgeStyle = 'bg-red-50 text-red-700 border border-red-200';
+                if (contacto.categoria === 'Proveedor de Abono') badgeStyle = 'bg-amber-50 text-amber-700 border border-amber-200';
+                if (contacto.categoria === 'Paciente') badgeStyle = 'bg-sky-50 text-sky-700 border border-sky-200';
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-semibold text-slate-800">${escapeHtml(contacto.nombre)}</td>
+                    <td class="py-3 px-4">
+                        <span class="inline-block text-xs font-medium px-2.5 py-1 rounded-full ${badgeStyle}">
+                            ${escapeHtml(contacto.categoria)}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 font-mono text-slate-600">${escapeHtml(contacto.telefono)}</td>
+                    <td class="py-3 px-4 text-center">
+                        <button onclick="eliminarContacto(${contacto.id})" 
+                            title="Eliminar contacto"
+                            class="text-slate-400 hover:text-red-600 transition-colors p-1 rounded-lg hover:bg-red-50">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </td>
+                `;
+                tabla.appendChild(tr);
+            });
+
+            actualizarContadores();
+        }
+
+        function agregarContacto(event) {
+            event.preventDefault();
+
+            const nombreInput = document.getElementById('nombre');
+            const categoriaInput = document.getElementById('categoria');
+            const telefonoInput = document.getElementById('telefono');
+            const mensajeError = document.getElementById('mensajeError');
+            const textoError = document.getElementById('textoError');
+
+            const nombre = nombreInput.value.trim();
+            const categoria = categoriaInput.value;
+            const telefono = telefonoInput.value.trim();
+
+            const esSoloNumeros = /^\d+$/.test(telefono);
+            
+            if (!esSoloNumeros || telefono.length !== 10) {
+                textoError.textContent = "Error: El teléfono debe tener exactamente 10 dígitos.";
+                mensajeError.classList.remove('hidden');
+                telefonoInput.focus();
+                return;
+            }
+
+            mensajeError.classList.add('hidden');
+
+            const nuevoContacto = {
+                id: Date.now(),
+                nombre: nombre,
+                categoria: categoria,
+                telefono: telefono
+            };
+
+            contactos.unshift(nuevoContacto);
+            guardarEnStorage();
+            renderizarAgenda();
+
+            document.getElementById('contactForm').reset();
+            mostrarToast('✓ Contacto guardado correctamente');
+        }
+
+        function eliminarContacto(id) {
+            contactos = contactos.filter(c => c.id !== id);
+            guardarEnStorage();
+            renderizarAgenda();
+            mostrarToast('Contacto eliminado de la agenda');
+        }
+
+        function filtrarContactos() {
+            renderizarAgenda();
+        }
+
+        function seleccionarFiltro(categoria) {
+            filtroCategoriaActual = categoria;
+            
+            document.querySelectorAll('.btn-filtro').forEach(btn => {
+                btn.className = 'btn-filtro px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all';
+            });
+
+            const btnActivo = document.getElementById(`btn-filtro-${categoria}`);
+            if (btnActivo) {
+                btnActivo.className = 'btn-filtro px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-600 text-white shadow-sm transition-all';
+            }
+
+            renderizarAgenda();
+        }
+
+        function actualizarContadores() {
+            document.getElementById('count-todos').textContent = contactos.length;
+            document.getElementById('count-medicos').textContent = contactos.filter(c => c.categoria === 'Médico').length;
+            document.getElementById('count-proveedores').textContent = contactos.filter(c => c.categoria === 'Proveedor de Abono').length;
+            document.getElementById('count-pacientes').textContent = contactos.filter(c => c.categoria === 'Paciente').length;
+        }
+
+        function exportarRespaldo() {
+            if (contactos.length === 0) {
+                mostrarToast('No hay contactos para respaldar');
+                return;
+            }
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(contactos, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `respaldo_agenda_ixtlahuacan_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+
+            mostrarToast('✓ Respaldo exportado exitosamente');
+        }
+
+        function restaurarRespaldo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const datosImportados = JSON.parse(e.target.result);
+                    if (Array.isArray(datosImportados)) {
+                        contactos = datosImportados;
+                        guardarEnStorage();
+                        renderizarAgenda();
+                        mostrarToast('✓ Respaldo restaurado correctamente');
+                    } else {
+                        alert('El archivo seleccionado no tiene un formato válido de respaldo.');
+                    }
+                } catch (err) {
+                    alert('Error al leer el archivo JSON.');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; // Reset input
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>"']/g, function(m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
+            });
+        }
+
+        function mostrarToast(mensaje) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = mensaje;
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
